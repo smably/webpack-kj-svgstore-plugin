@@ -1,5 +1,5 @@
 {
-  "name": "webpack-svgstore-plugin",
+  "name": "webpack-kj-svgstore-plugin",
   "version": "4.0.1",
   "description": "Webpack svgstore plugin",
   "main": "src/svgstore.js",
@@ -40,6 +40,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mrsum/webpack-svgstore-plugin"
+    "url": "https://github.com/smably/webpack-kj-svgstore-plugin"
   }
 }
