@@ -19,6 +19,8 @@ const utils = require('./helpers/utils');
 const ConstDependency = require('webpack/lib/dependencies/ConstDependency');
 const NullFactory = require('webpack/lib/NullFactory');
 const async = require('async');
+const fs = require('fs');
+const crypto = require('crypto');
 
 class WebpackSvgStore {
 
@@ -61,7 +63,14 @@ class WebpackSvgStore {
       }
     });
 
-    data.fileName = utils.hash(data.fileName, parser.state.current.buildTimestamp);
+    // This is inefficient because we read all the SVGs twice, but at our scale it doesn't make a big difference
+    const svgFileNames = utils.filesMapSync(path.join(data.context, data.path || ''));
+    const svgFilesContent = svgFileNames.reduce(function (accContent, fileName) {
+      return accContent + fs.readFileSync(fileName, 'utf8');
+    }, '');
+    const hash = crypto.createHash('md5').update(svgFilesContent).digest('hex').substr(0, 15);
+
+    data.fileName = utils.hash(data.fileName, hash);
     let replacement = expr.id.name + ' = { filename: ' + "__webpack_require__.p +" + '"' + data.fileName + '" }';
     let dep = new ConstDependency(replacement, expr.range);
     dep.loc = expr.loc;
